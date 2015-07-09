@@ -5,10 +5,11 @@ PROFESSOR ORIENTADOR: RODRIGO ROCHA
 
 
 MEMBROS: 
-         FELIPE ARAUJO DA SILVA   felipe.araujo.s@live.com
-         JONATHAN SILVA SANTOS    jonathan.santos15@gmail.com
 
-ENTREGA FINAL: 09/07/2015
+         FELIPE ARAUJO DA SILVA - felipe.araujo.s@live.com  
+         JONATHAN SILVA SANTOS - jonathan.santos15@gmail.com  
+
+ENTREGA FINAL: 08/07/2015
 
 
 ARTEFATOS GERADOS:
