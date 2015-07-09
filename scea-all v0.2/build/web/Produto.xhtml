@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="Layout.xhtml" >
+        <ui:define name="corpo">
+            <h:head>
+                <title>SCEA WEB - Gerenciar Produtos</title>
+            </h:head>
+            <style>
+                .zerado{
+                    background-color: #eecdd1
+                }
+                .critico{
+                    background-color: #feff68
+                }
+                .disponivel{
+                    background-color: #dbe4ad
+                }
+            </style>
+            <h:body onload="#{produtoBean.consultar()}">
+                <h:form id="form">
+                    <br></br><br></br>
+                    <div>
+                        <p:outputPanel id="info">
+                            <p:fieldset legend="Informações do Produto">
+                                <h:panelGrid columns="6" >
+
+                                    Nome do Produto: 
+                                    <p:inputText value="#{produtoBean.nome}"> 
+                                        <f:ajax event="keyup" render="table" listener="#{produtoBean.consultar()}"/>
+                                    </p:inputText>   
+                                             
+                                    Fornecedor: 
+                                    <p:selectOneMenu id="forn" value="#{produtoBean.idFornecedor}" onchange="#{produtoBean.consultar()}" >
+                                        <f:selectItems value="#{fornecedorBean.itens}" />
+                                    </p:selectOneMenu>
+                                    
+                                               
+                                    Tipo:        
+                                    <p:selectOneMenu id="tipo" value="#{produtoBean.idTipo}" onchange="#{produtoBean.consultar()}" >
+                                        <f:selectItems value="#{tipoDeprodutoBean.itens}" />
+                                    </p:selectOneMenu>
+                                    
+                                    Quantidade: <p:inputText value="#{produtoBean.quantidade}"/>
+                                    
+                                    Valor:  <p:inputText value="#{produtoBean.valor}"/>
+                                </h:panelGrid>
+                                
+
+                            </p:fieldset>
+                        </p:outputPanel>
+                    </div>
+                    <div>
+                        <p:toolbar>
+                            <f:facet name="left">
+                                <p:commandButton value="Salvar" action="#{produtoBean.Salvar()}"  update ="avisos,msgs,table,info">
+                                    <p:resetInput target="info"/>
+                                </p:commandButton>
+                                <p:commandButton value="Alterar" action="#{produtoBean.Alterar()}"  update ="avisos,msgs,table"/>
+                                <p:commandButton value="Excluir" action="#{produtoBean.excluir()}"  update ="avisos,msgs,table"/>
+                                <span class="ui-separator">
+                                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                                </span>
+                            </f:facet> 
+                            <f:facet name="right" id="id">
+                                <p:outputLabel id="idPesq" value="Pesquisar por ID: " ><p:inputText value="#{produtoBean.id}" placeholder="Pesquisar ID">
+                                     <f:ajax event="keyup" render="table" listener="#{produtoBean.consultar()}"/>
+                                </p:inputText></p:outputLabel>
+                            </f:facet>
+                        </p:toolbar>
+                    </div>
+                    <p:messages id="msgs" showDetail="true" />
+                    <p:growl id="avisos" showDetail="true" life="3000" />
+                    
+                        <p:dataTable value="#{produtoBean.todosProdutos}" id="table"  var="f" rows="6" paginator="true"
+                                     rowStyleClass="#{f.quantidade eq 0 ? 'zerado' : (f.quantidade le f.tipoDeProduto.qtdeMin ? 'critico' : 'disponivel')}"
+                                     selectionMode="single" selection="#{produtoBean.produtoSelecionado}" rowKey="#{f.id}">                                            
+                            <p:ajax event="rowSelect" listener="#{produtoBean.pegar}"  update=":form:info,table,:form:idPesq"/>                                                        
+                            <p:column headerText="ID" style="width: 14px">
+                                #{f.id}
+                            </p:column>
+                            <p:column headerText="Nome"> 
+                                #{f.nome}
+                            </p:column>
+                            <p:column headerText="Descrição do Tipo">
+                                #{f.tipoDeProduto.descricao}
+                            </p:column>                        
+                            <p:column headerText="Quantidade" style="width: 65px">
+                                #{f.quantidade}
+                            </p:column>
+                            <p:column headerText="Quantidade Mínima" style="width: 65px">
+                                #{f.tipoDeProduto.qtdeMin}
+                            </p:column>
+                            <p:column headerText="Quantidade Máxima" style="width: 65px">
+                                #{f.tipoDeProduto.qtdeMax}
+                            </p:column>
+                            <p:column headerText="Fornecedor">
+                                #{f.fornecedor.nomeFantasia}
+                            </p:column>
+                            <p:column headerText="Telefone">
+                                #{f.fornecedor.telefone.numero}
+                            </p:column>
+                            
+                            <p:column headerText="Email">
+                                #{f.fornecedor.email}
+                            </p:column>  
+                        </p:dataTable>
+                                                               
+                </h:form>
+            </h:body>
+        </ui:define>
+    </ui:composition>
+</html>

@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="Layout.xhtml" >
+        <ui:define name="corpo">
+            <h:head>
+                <title>SCEA WEB - Gerenciar Produtos</title>
+                <style>
+                .zerado{
+                    background-color: #eecdd1
+                }
+                .critico{
+                    background-color: #feff68
+                }
+                .disponivel{
+                    background-color: #dbe4ad
+                }
+                </style>
+            </h:head>
+            <h:body onload="#{transacaoBean.consultar()}">
+                <h:form id="form">
+                    <p:outputLabel rendered="false" title="#{transacaoBean.idAcesso}" />
+                    <p:fieldset id="transacao" legend="Dados da Entrada">
+                        <h:panelGrid columns="4" columnClasses="column" cellpadding="2">
+
+                            <strong>Nome do Produto:</strong> 
+                                    <p:outputLabel  value="#{transacaoBean.produtoSelecionado.nome}"/>
+                                       
+                                    <strong>Fornecedor: </strong> 
+                                    <p:outputLabel  value="#{transacaoBean.produtoSelecionado.fornecedor.nomeFantasia}"/>
+                                     
+                                    <strong>Quantidade Atual: </strong> 
+                                    <p:outputLabel   value="#{transacaoBean.produtoSelecionado.quantidade}"/>
+                                    
+                                    <strong>Quantidade Mínima Recomendavel: </strong>    
+                                    <p:outputLabel value="#{transacaoBean.produtoSelecionado.tipoDeProduto.qtdeMin}"/>
+                                    
+                                    <strong>Quantidade Máxima Recomendavel: </strong>   
+                                    <p:outputLabel value="#{transacaoBean.produtoSelecionado.tipoDeProduto.qtdeMax}"/>
+                                     
+                                    <strong>Tipo: </strong>   
+                                    <p:outputLabel value="#{transacaoBean.produtoSelecionado.tipoDeProduto.descricao}"/>
+                                </h:panelGrid>
+                        
+                        
+                        <h:panelGrid columns="6">
+                            
+                            
+                            
+                            
+                            
+                            ID Produto:  <p:inputText value="#{transacaoBean.id}">
+                               <f:ajax event="keyup" render="table" listener="#{transacaoBean.consultar()}"/>
+                             </p:inputText>
+                            Quantidade: <p:inputText value="#{transacaoBean.quantidade}"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    
+                    <center>
+                        <p:commandButton style="width: 200px; height: 40px" value="Realizar Entrada" action="#{transacaoBean.entrada()}"  update ="msgs,avisos,transacao,:form:table"/>
+                    </center>    
+                    
+                    
+                    <p:messages id="msgs" showDetail="true" />
+                    <p:growl id="avisos" showDetail="true" life="10000" />
+
+                    <p:dataTable value="#{transacaoBean.todosProdutos}" id="table" var="f" 
+                                 rows="8" paginator="true"
+                                 rowStyleClass="#{f.quantidade eq 0 ? 'zerado' : 
+                                                 (f.quantidade le f.tipoDeProduto.qtdeMin ? 'critico' : 'disponivel')}"
+                                 selectionMode="single" selection="#{transacaoBean.produtoSelecionado}" rowKey="#{f.id}" >                                            
+                            <p:ajax event="rowSelect" listener="#{transacaoBean.pegar}"  update=":form:transacao"/> 
+                        <p:column>
+                            <f:facet name="header">ID</f:facet>
+                            #{f.id}
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Nome</f:facet>   
+                            #{f.nome}
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Quantidade</f:facet>
+                            #{f.quantidade}
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Fornecedor</f:facet>
+                            #{f.fornecedor.nomeFantasia}
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Descrição do Tipo</f:facet>
+                            #{f.tipoDeProduto.descricao}
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </h:body>
+        </ui:define>
+    </ui:composition>
+  </html>
